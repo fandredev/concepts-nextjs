@@ -1,32 +1,34 @@
 import axios from 'axios'
 import Link from 'next/link'
-import {User} from '../../api/User'
+import { User } from '../../api/User'
 
-interface UserProps {
-  users?: Array<User>
+import { GetServerSideProps } from 'next'
+
+interface Props {
+  items?: User[]
 }
 
-function Users({ users }: UserProps){
+const Users = ({ items }: Props): JSX.Element =>{
   return (
     <>
-      {users.map(({ name, id }, index) => (
-        <div>
-          <Link key={index} href="/profile/[id]" as={`/profile/${id}`}>
-            <a>{name}</a>
-          </Link>
-        </div>
+      {items.map(({ name, id }, index) => (
+        <section key={index}>
+          <p>{id}</p>
+          <p>{name}</p>
+        </section>
       ))}
     </>
   )
 }
 
-export async function getStaticProps(context) {
-  const { data } = await axios.get('https://jsonplaceholder.typicode.com/users')
+export const getServerSideProps: GetServerSideProps = async () => {
+  const response = await axios.get('http://localhost:3000/api/handler')
+  const items: User[] = await response.data
   return {
-    props: {
-      users: data
-    }
+    props: { items }
   }
-}
+} 
+
+
 
 export default Users
