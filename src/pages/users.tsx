@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
+import {User} from '../../api/User'
 
-function Users({ users }){
-  // const [users, setUsers] = useState([])
+interface UserProps {
+  users?: Array<User>
+}
 
-  // const fetchUsers = async () => {
-  //   const { data } = await axios.get('https://jsonplaceholder.typicode.com/users')
-
-  //   setUsers(data)
-  // }
-
-  // useEffect(() => {
-  //   fetchUsers()
-  // }, [])
+function Users({ users }: UserProps){
   return (
     <>
-      {users.map(({ name, id}, index) => (
+      {users.map(({ name, id }, index) => (
         <div>
           <Link key={index} href="/profile/[id]" as={`/profile/${id}`}>
             <a>{name}</a>

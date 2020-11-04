@@ -1,7 +1,12 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { User } from '../../../api/User';
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 
-function Profile({ user = {} }){
+export interface UserProps {
+  user: User
+}
+function Profile({ user }: InferGetStaticPropsType<typeof getStaticProps>){
   const router = useRouter()
 
   if(router.isFallback)
@@ -14,9 +19,10 @@ function Profile({ user = {} }){
     </aside>
   )
 }
-export async function getStaticProps({ params }){
+
+export const getStaticProps: GetStaticProps<UserProps> = async context => {
   const { data } = await axios.get('https://jsonplaceholder.typicode.com/users', {
-    params: { id: params.id }
+    params: { id: context.params.id }
   })
 
   const user = await data[0]
@@ -25,12 +31,11 @@ export async function getStaticProps({ params }){
     props : { user, revalidate: 10 }
   }
 }
-
-export async function getStaticPaths(){
+export const getStaticPaths: GetStaticPaths = async () => {
   const response = await axios.get('https://jsonplaceholder.typicode.com/users')
-
+  
   const users = await response.data.slice(0, 5)
-
+  
   const paths = users.map(({ id }) => {
     return {
       params: {
