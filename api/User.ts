@@ -3,3 +3,6 @@ export interface User {
   name: string
   username?: string
 }
+export interface EnvProps {
+  mongoDbUri: string
+}
